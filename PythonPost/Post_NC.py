@@ -627,30 +627,37 @@ def get_G93_feed_speed(xx,yy,zz,f,feedmax,deg):
     r_dis = abs(deg)  #角度方向的位移，即角度值
     l_time = l_dis / f
     r_time = r_dis / f
-    #new_time = l_time + r_time
-    if(l_time == 0.0):
+    total_time = l_time + r_time
+    if(total_time == 0):
         l_feed = 0.0
     else:
-        l_feed = 1 / l_time
-    
-    if(r_dis == 0.0):
-        r_feed = 0.0
+        l_feed = 1 / total_time
+        if (l_feed > feed_max):
+            l_feed = feed_max
         renew_feed = l_feed
-    else:
-        r_feed = 1 / r_time
+    #if(l_time == 0.0):
+    #    l_feed = 0.0
+    #else:
+    #    l_feed = 1 / l_time
     
-        if(l_feed >= r_feed):
-            renew_feed = r_feed
-            if(renew_feed >= feed_max):
-                renew_feed = feed_max
-            counting_time = counting_time + r_time
-            renew_feed = renew_feed
-        else:
-            renew_feed = l_feed
-            if(renew_feed >= feed_max):
-                renew_feed = feed_max
-            counting_time = counting_time + l_time
-            renew_feed = renew_feed
+    #if(r_dis == 0.0):
+    #    r_feed = 0.0
+    #    renew_feed = l_feed
+    #else:
+    #    r_feed = 1 / r_time
+    
+    #    if(l_feed >= r_feed):
+    #        renew_feed = r_feed
+    #        if(renew_feed >= feed_max):
+    #            renew_feed = feed_max
+    #        counting_time = counting_time + r_time
+    #        renew_feed = renew_feed
+    #    else:
+    #        renew_feed = l_feed
+    #        if(renew_feed >= feed_max):
+    #            renew_feed = feed_max
+    #        counting_time = counting_time + l_time
+    #        renew_feed = renew_feed
 
 
 #匹配5轴后处理
