@@ -1,6 +1,7 @@
 import os
 import re
 import math
+import numpy as np
 
 reg_feed = r'FEDRAT/(MMPM,)?([0-9]+\.?[0-9]*|[0-9]*\.?[0-9]+)$'
 patternf = re.compile(reg_feed)
