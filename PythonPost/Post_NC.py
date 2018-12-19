@@ -7,6 +7,8 @@ import math
 from tkinter import *
 import tkinter.filedialog
 
+from mpl_toolkits.mplot3d import axes3d
+import matplotlib.pyplot as plt
 import numpy as np
 
 
@@ -136,6 +138,10 @@ G_J_value = []
 G_K_value = []
 G_R_value = []
 
+G_3d_x = []
+G_3d_y = []
+G_3d_z = []
+
 #4 axis degree
 G_4ax_degree = []
 
@@ -248,6 +254,11 @@ def match_Feature_line_3axis(wlen, alldata):
                 G_i0_value.append(get_G0_body.group(4))
                 G_j0_value.append(get_G0_body.group(5))
                 G_k0_value.append(get_G0_body.group(6))
+
+                G_3d_x.append(float(get_G0_body.group(1)))
+                G_3d_y.append(float(get_G0_body.group(2)))
+                G_3d_z.append(float(get_G0_body.group(3)))
+
                 cnum = cnum + 2
                 Gcode_3_style('G00', get_G0_body.group(1), get_G0_body.group(2), get_G0_body.group(3), G_speed)
                 continue
@@ -259,6 +270,11 @@ def match_Feature_line_3axis(wlen, alldata):
             G_i_value.append(get_G1_match.group(4))
             G_j_value.append(get_G1_match.group(5))
             G_k_value.append(get_G1_match.group(6))
+
+            G_3d_x.append(float(get_G1_match.group(1)))
+            G_3d_y.append(float(get_G1_match.group(2)))
+            G_3d_z.append(float(get_G1_match.group(3)))
+
             Gcode_3_style('G01', get_G1_match.group(1), get_G1_match.group(2), get_G1_match.group(3), G_speed)
 
         if(get_G23_match):
@@ -329,7 +345,7 @@ def match_Feature_line_3axis(wlen, alldata):
         cnum = cnum + 1
 
         #refresh_file(G3_code)
-
+        
             
             #print('We got the match!......')
     # for j in range(len(G_x0_value)):
@@ -372,6 +388,11 @@ def match_Feature_line_4axis(wlen, alldata):
                 G_i0_value.append(get_G0_body.group(4))
                 G_j0_value.append(get_G0_body.group(5))
                 G_k0_value.append(get_G0_body.group(6))
+
+                G_3d_x.append(float(get_G0_body.group(1)))
+                G_3d_y.append(float(get_G0_body.group(2)))
+                G_3d_z.append(float(get_G0_body.group(3)))
+
                 cnum = cnum + 2
                 #Gcode_4_style(head_line, x, y, z, axis_style, ang1, F)
                 #角度计算包括主轴正转角度值，反转角度，传递一个参数，记录正转，反转的状态,#hao
@@ -493,6 +514,11 @@ def match_Feature_line_4axis(wlen, alldata):
             G_i_value.append(get_G1_match.group(4))
             G_j_value.append(get_G1_match.group(5))
             G_k_value.append(get_G1_match.group(6))
+
+            #3d数据显示使用
+            G_3d_x.append(float(get_G1_match.group(1)))
+            G_3d_y.append(float(get_G1_match.group(2)))
+            G_3d_z.append(float(get_G1_match.group(3)))
 
             #用于换算坐标系
             lx = float(get_G1_match.group(1))
@@ -1357,6 +1383,27 @@ def output_4x_Gcode(post_name, using_path):
         print(G4_new_code[j])
     output_file.close()
 
+def show_3d_view(x, y, z):
+    x_lines = x
+    y_lines = y
+    z_lines = z
+
+    # for i in range(len(G_x_value)):
+    #     x_lines.append(float(G_x_value[i]))
+    #     y_lines.append(float(G_y_value[i]))
+    #     z_lines.append(float(G_z_value[i]))
+
+    fig = plt.figure()
+    ax = fig.gca(projection='3d')
+
+    ax.set_title('3D_Curve')
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+
+    figure = ax.plot(x_lines, y_lines, z_lines, c='r')
+    plt.show()
+
 
 
 def window_form():
@@ -1404,6 +1451,7 @@ def window_form():
                     write_names.append(last_name_without_sytle)
                     print('the using name is: ' + last_name_without_sytle)
                     sel_list.insert(tkinter.END, file_fullname)
+                    show_3d_view(G_3d_x, G_3d_y, G_3d_z)
             else:
                 sel_path.config(text='没有选择文件')
 
@@ -1422,6 +1470,9 @@ def window_form():
                     write_names.append(last_name_without_sytle)
                     print('the using name is: ' + last_name_without_sytle)
                     sel_list.insert(tkinter.END, file_fullname)
+
+                    show_3d_view(G_3d_x, G_3d_y, G_3d_z)
+
             else:
                 sel_path.config(text='没有选择文件')
 
